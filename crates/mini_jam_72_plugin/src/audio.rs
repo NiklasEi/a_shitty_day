@@ -1,7 +1,6 @@
 use crate::{AppState, STAGE};
 use bevy::prelude::{
-    AppBuilder, AssetServer, Handle, IntoSystem, Plugin, Res, ResMut,
-    Time, Timer,
+    AppBuilder, AssetServer, Handle, IntoSystem, Plugin, Res, ResMut, Time, Timer,
 };
 use bevy_improved_audio::{Audio, AudioPlugin, AudioSource};
 

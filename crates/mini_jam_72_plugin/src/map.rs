@@ -1,16 +1,23 @@
-use crate::{AppState, STAGE};
+mod mall;
+mod second_mall;
+
+use crate::map::mall::get_mall_map;
+use crate::map::second_mall::get_second_mall_map;
+use crate::{AppState, GameState, STAGE};
 use bevy::prelude::*;
 
 pub struct MapPlugin;
 
 impl Plugin for MapPlugin {
     fn build(&self, app: &mut AppBuilder) {
-        let map = Map::load_map();
-        app.add_resource(map)
-            .on_state_enter(STAGE, AppState::InGame, render_map.system())
-            .on_state_enter(STAGE, AppState::InGame, setup_camera.system())
+        app.on_state_enter(STAGE, AppState::InGame, initialize_map.system())
             .on_state_exit(STAGE, AppState::InGame, break_down_map.system());
     }
+}
+
+pub enum Maps {
+    Mall,
+    SecondMall,
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -36,15 +43,13 @@ pub struct Coordinate {
     pub y: f32,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Map {
     pub height: usize,
     pub width: usize,
     pub tiles: Vec<Vec<Tile>>,
     pub tile_size: f32,
-    pub spawn: Coordinate,
-    pub sink: Coordinate,
-    pub waypoints: Vec<Coordinate>,
+    pub player_spawn: Coordinate,
 }
 
 pub struct MapTile {
@@ -53,131 +58,81 @@ pub struct MapTile {
     pub tile: Tile,
 }
 
-impl Map {
-    pub fn load_map() -> Self {
-        const MAP_STR: &str = "\
-            #############\n\
-            ########t####\n\
-            ###.#.#######\n\
-            #a++++0++++q#\n\
-            #####+#+#.###\n\
-            #t#+++#++.#t#\n\
-            ###+.###+++##\n\
-            ###+++#.#.+##\n\
-            #####++++++##\n\
-            ##t#.#.####t#\n\
-            #############";
+pub struct MapData {
+    floors: Vec<String>,
+    player_spawn: Coordinate,
+}
 
+impl Map {
+    pub fn load_map(map_data: MapData) -> Self {
         let mut map = Map {
             height: 0,
             width: 0,
             tiles: vec![],
             tile_size: 64.,
-            sink: Coordinate::default(),
-            spawn: Coordinate::default(),
-            waypoints: vec![],
+            player_spawn: map_data.player_spawn,
         };
 
-        let mut preliminary_waypoints = vec![];
-        let mut spawn: Point = Default::default();
-        let mut sink: Point = Default::default();
-        map.height = MAP_STR.lines().count();
-        for (row_index, line) in MAP_STR.lines().enumerate() {
-            let row_index = map.height - row_index - 1;
-            let mut row = vec![];
-            for (column_index, char) in line.chars().enumerate() {
-                match char {
-                    '0' => row.push(Tile::Tower),
-                    '.' => row.push(Tile::TowerPlot),
-                    '#' => row.push(Tile::Empty),
-                    't' => row.push(Tile::Tree),
-                    '+' => {
-                        preliminary_waypoints.push(Point {
-                            x: column_index,
-                            y: row_index,
-                        });
-                        row.push(Tile::Path)
+        for map_str in map_data.floors.iter() {
+            map.height = map_str.lines().count();
+            for (row_index, line) in map_str.lines().enumerate() {
+                let _row_index = map.height - row_index - 1;
+                let mut row = vec![];
+                for (_column_index, char) in line.chars().enumerate() {
+                    match char {
+                        '0' => row.push(Tile::Tower),
+                        '.' => row.push(Tile::TowerPlot),
+                        '#' => row.push(Tile::Empty),
+                        't' => row.push(Tile::Tree),
+                        '+' => row.push(Tile::Path),
+
+                        'a' => row.push(Tile::Spawn),
+
+                        'q' => row.push(Tile::Castle),
+
+                        _ => panic!("unknown map char {}", char),
                     }
-                    'a' => {
-                        spawn = Point {
-                            x: column_index,
-                            y: row_index,
-                        };
-                        map.spawn = Coordinate {
-                            x: column_index as f32 * map.tile_size,
-                            y: row_index as f32 * map.tile_size,
-                        };
-                        row.push(Tile::Spawn)
-                    }
-                    'q' => {
-                        sink = Point {
-                            x: column_index,
-                            y: row_index,
-                        };
-                        map.sink = Coordinate {
-                            x: column_index as f32 * map.tile_size,
-                            y: row_index as f32 * map.tile_size,
-                        };
-                        row.push(Tile::Castle)
-                    }
-                    _ => panic!("unknown map char {}", char),
                 }
+                map.tiles.push(row);
             }
-            map.tiles.push(row);
         }
+
         // otherwise my map is head down O.o
         map.tiles.reverse();
         map.width = map.tiles.first().unwrap().len();
-        map.create_way_points(preliminary_waypoints, spawn, sink);
 
         map
     }
-
-    fn create_way_points(&mut self, mut waypoints: Vec<Point>, spawn: Point, sink: Point) {
-        let mut last_point = spawn;
-        loop {
-            let next_point_position = waypoints.iter().position(|point| {
-                let length = Vec2::new(
-                    last_point.x as f32 - point.x as f32,
-                    last_point.y as f32 - point.y as f32,
-                )
-                .length();
-                length > 0.9 && length < 1.1
-            });
-            if next_point_position.is_none() {
-                self.waypoints.push(Coordinate {
-                    x: sink.x as f32 * self.tile_size,
-                    y: sink.y as f32 * self.tile_size,
-                });
-                return;
-            }
-            let next_point_position = next_point_position.unwrap();
-            let next_point = waypoints.remove(next_point_position);
-            self.waypoints.push(Coordinate {
-                x: next_point.x as f32 * self.tile_size,
-                y: next_point.y as f32 * self.tile_size,
-            });
-            last_point = next_point;
-        }
-    }
 }
 
-fn setup_camera(commands: &mut Commands, map: Res<Map>) {
+fn initialize_map(
+    commands: &mut Commands,
+    game_state: Res<GameState>,
+    asset_server: Res<AssetServer>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+) {
+    let map = match game_state.current_map {
+        Maps::Mall => Map::load_map(get_mall_map()),
+        Maps::SecondMall => Map::load_map(get_second_mall_map()),
+    };
     commands.spawn(Camera2dBundle {
         transform: Transform::from_translation(Vec3::new(
-            (map.width as f32 / 2. - 0.5) * map.tile_size,
-            (map.height as f32 / 2. - 0.5) * map.tile_size,
+            map.player_spawn.x,
+            map.player_spawn.y,
             10.,
         )),
         ..Camera2dBundle::default()
     });
+    render_map(commands, &map, &asset_server, &mut materials);
+
+    commands.insert_resource(map);
 }
 
 fn render_map(
     commands: &mut Commands,
-    map: Res<Map>,
-    asset_server: Res<AssetServer>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
+    map: &Map,
+    asset_server: &Res<AssetServer>,
+    materials: &mut ResMut<Assets<ColorMaterial>>,
 ) {
     let blank_handle: Handle<Texture> = asset_server.load("blank64x64.png");
     let tower_plot_handle: Handle<Texture> = asset_server.load("towerplot64x64.png");

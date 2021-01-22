@@ -1,12 +1,11 @@
-use crate::{AppState, STAGE, GameState};
+use crate::{AppState, GameState, STAGE};
 use bevy::prelude::*;
 
 pub struct UiPlugin;
 
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut AppBuilder) {
-        app
-            .init_resource::<ButtonMaterials>()
+        app.init_resource::<ButtonMaterials>()
             .on_state_enter(STAGE, AppState::InGame, init_life.system())
             .on_state_update(STAGE, AppState::InGame, update_game_state.system())
             .on_state_update(STAGE, AppState::InGame, retry_system.system())
@@ -131,7 +130,6 @@ fn retry_system(
     button_materials: Res<ButtonMaterials>,
 ) {
     if game_state.health < 1 {
-        println!("spawning retry button");
         commands
             .spawn(ButtonBundle {
                 style: Style {
