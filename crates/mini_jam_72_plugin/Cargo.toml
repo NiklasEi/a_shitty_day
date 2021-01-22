@@ -1,0 +1,22 @@
+[package]
+name = "mini_jam_72_plugin"
+version = "0.1.0"
+authors = ["Niklas Eicker <git@nikl.me>"]
+edition = "2018"
+publish = false
+
+[features]
+default = [
+    "bevy/bevy_gltf",
+    "bevy/bevy_winit",
+    "bevy/render",
+    "bevy/png",
+    "bevy_improved_audio/mp3",
+    "bevy/bevy_wgpu"
+]
+
+[dependencies]
+bevy = {version="0.4.0", default-features=false}
+bevy_improved_audio = { git="https://github.com/NiklasEi/bevy_improved_audio.git" }
+bevy_prototype_lyon = "0.1.5"
+rand = "0.8.1"
