@@ -4,7 +4,7 @@ use std::collections::HashMap;
 pub fn get_mall_map() -> MapData {
     let mut path_map = HashMap::default();
     path_map.insert('#', "structure/woodenFloor.png".to_owned());
-    path_map.insert('w', "structure/stoneFloor.png".to_owned());
+    path_map.insert('w', "structure/wallblue.png".to_owned());
     path_map.insert('1', "objects/bed_1.png".to_owned());
     path_map.insert('2', "objects/bed_2.png".to_owned());
     path_map.insert('3', "objects/bed_3.png".to_owned());
