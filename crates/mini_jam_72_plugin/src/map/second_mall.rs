@@ -1,6 +1,10 @@
 use crate::map::{Coordinate, MapData};
+use std::collections::HashMap;
 
 pub fn get_second_mall_map() -> MapData {
+    let mut path_map = HashMap::default();
+    path_map.insert('#', "structure/woodenFloor.png".to_owned());
+
     return MapData {
         floors: vec!["\
             #############\n\
@@ -16,5 +20,6 @@ pub fn get_second_mall_map() -> MapData {
             #############"
             .to_owned()],
         player_spawn: Coordinate { x: 100., y: 100. },
+        path_map
     };
 }
