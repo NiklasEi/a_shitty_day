@@ -2,3 +2,4 @@ target/
 .idea/
 .cargo/
 mini_jam_72_web
+.DS_Store
