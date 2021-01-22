@@ -44,6 +44,8 @@ struct TileSpriteHandles {
     handles: Vec<HandleUntyped>,
 }
 
+pub struct PlayerCamera;
+
 #[derive(Debug, Default)]
 pub struct Map {
     pub height: usize,
@@ -111,14 +113,16 @@ fn initialize_map(
         Maps::Mall => Map::load_map(get_mall_map()),
         Maps::SecondMall => Map::load_map(get_second_mall_map()),
     };
-    commands.spawn(Camera2dBundle {
-        transform: Transform::from_translation(Vec3::new(
-            game_state.player_spawn.x,
-            game_state.player_spawn.y,
-            10.,
-        )),
-        ..Camera2dBundle::default()
-    });
+    commands
+        .spawn(Camera2dBundle {
+            transform: Transform::from_translation(Vec3::new(
+                game_state.player_spawn.x,
+                game_state.player_spawn.y,
+                10.,
+            )),
+            ..Camera2dBundle::default()
+        })
+        .with(PlayerCamera);
     render_map(commands, &map, &asset_server, &mut materials);
 
     commands.insert_resource(map);
