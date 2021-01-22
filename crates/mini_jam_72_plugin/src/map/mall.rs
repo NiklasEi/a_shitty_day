@@ -11,7 +11,8 @@ pub fn get_mall_map() -> MapData {
     path_map.insert('4', "objects/bed_4.png".to_owned());
 
     return MapData {
-        floors: vec!["\
+        floors: vec![
+            "\
             #############\n\
             #############\n\
             #############\n\
@@ -23,7 +24,8 @@ pub fn get_mall_map() -> MapData {
             #############\n\
             #############\n\
             #############"
-            .to_owned(),"\
+                .to_owned(),
+            "\
             wwwwwwwwwwwww\n\
             w...........w\n\
             w...........w\n\
@@ -35,8 +37,8 @@ pub fn get_mall_map() -> MapData {
             w...........w\n\
             w...........w\n\
             wwwwwwwwwwwww"
-            .to_owned()],
-        player_spawn: Coordinate { x: 200., y: 200. },
-        path_map
+                .to_owned(),
+        ],
+        path_map,
     };
 }

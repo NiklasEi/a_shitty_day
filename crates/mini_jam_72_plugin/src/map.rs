@@ -23,8 +23,8 @@ pub enum Maps {
 }
 
 #[derive(Debug, PartialEq, Clone)]
-pub struct  Tile {
-    pub asset_path: Option<String>
+pub struct Tile {
+    pub asset_path: Option<String>,
 }
 
 #[derive(Default)]
@@ -41,7 +41,7 @@ pub struct Coordinate {
 
 #[derive(Default)]
 struct TileSpriteHandles {
-    handles: Vec<HandleUntyped>
+    handles: Vec<HandleUntyped>,
 }
 
 #[derive(Debug, Default)]
@@ -50,7 +50,6 @@ pub struct Map {
     pub width: usize,
     pub floors: Vec<Vec<Vec<Tile>>>,
     pub tile_size: f32,
-    pub player_spawn: Coordinate,
 }
 
 pub struct MapTile {
@@ -61,8 +60,7 @@ pub struct MapTile {
 
 pub struct MapData {
     floors: Vec<String>,
-    player_spawn: Coordinate,
-    path_map: HashMap<char, String>
+    path_map: HashMap<char, String>,
 }
 
 impl Map {
@@ -72,7 +70,6 @@ impl Map {
             width: 0,
             floors: vec![],
             tile_size: 32.,
-            player_spawn: map_data.player_spawn,
         };
 
         for map_str in map_data.floors.iter() {
@@ -84,12 +81,10 @@ impl Map {
                 for (_column_index, char) in line.chars().enumerate() {
                     if let Some(path) = map_data.path_map.get(&char) {
                         row.push(Tile {
-                            asset_path: Some(path.clone())
+                            asset_path: Some(path.clone()),
                         })
                     } else {
-                        row.push(Tile {
-                            asset_path: None
-                        })
+                        row.push(Tile { asset_path: None })
                     }
                 }
                 floor.push(row);
@@ -118,8 +113,8 @@ fn initialize_map(
     };
     commands.spawn(Camera2dBundle {
         transform: Transform::from_translation(Vec3::new(
-            map.player_spawn.x,
-            map.player_spawn.y,
+            game_state.player_spawn.x,
+            game_state.player_spawn.y,
             10.,
         )),
         ..Camera2dBundle::default()
@@ -142,7 +137,11 @@ fn render_map(
                 if let Some(path) = &tile.asset_path {
                     commands
                         .spawn(SpriteBundle {
-                            material: materials.add(asset_server.get_handle(&("textures/".to_owned() + path)[..]).into()),
+                            material: materials.add(
+                                asset_server
+                                    .get_handle(&("textures/".to_owned() + path)[..])
+                                    .into(),
+                            ),
                             transform: Transform::from_translation(Vec3::new(
                                 column as f32 * map.tile_size,
                                 row as f32 * map.tile_size,

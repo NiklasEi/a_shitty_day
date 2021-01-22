@@ -4,7 +4,7 @@ mod menu;
 mod ui;
 
 use crate::audio::InternalAudioPlugin;
-use crate::map::{MapPlugin, Maps};
+use crate::map::{Coordinate, MapPlugin, Maps};
 use crate::menu::MenuPlugin;
 use crate::ui::UiPlugin;
 
@@ -39,6 +39,7 @@ pub struct GameState {
     pub score: usize,
     pub enemy_health: i32,
     pub current_map: Maps,
+    pub player_spawn: Coordinate,
 }
 
 impl Default for GameState {
@@ -48,6 +49,7 @@ impl Default for GameState {
             score: 0,
             enemy_health: 1,
             current_map: Maps::Mall,
+            player_spawn: Coordinate { x: 200., y: 200. },
         }
     }
 }

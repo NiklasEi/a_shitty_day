@@ -19,7 +19,6 @@ pub fn get_second_mall_map() -> MapData {
             ##t#.#.####t#\n\
             #############"
             .to_owned()],
-        player_spawn: Coordinate { x: 100., y: 100. },
-        path_map
+        path_map,
     };
 }
