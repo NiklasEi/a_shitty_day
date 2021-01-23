@@ -1,5 +1,5 @@
 use crate::actions::Actions;
-use crate::map::PlayerCamera;
+use crate::map::{Collide, Map, PlayerCamera};
 use crate::{AppState, GameState, STAGE};
 use bevy::prelude::*;
 
@@ -36,8 +36,10 @@ fn spawn_player(
 fn move_player(
     time: Res<Time>,
     actions: Res<Actions>,
+    map: Res<Map>,
     mut camera_query: Query<&mut Transform, With<PlayerCamera>>,
     mut player_query: Query<&mut Transform, With<Player>>,
+    mut collider_query: Query<&Collide>,
 ) {
     if actions.player_movement.is_none() {
         return;
@@ -48,10 +50,19 @@ fn move_player(
         actions.player_movement.unwrap().y * speed * time.delta_seconds(),
         0.,
     );
-    for mut transform in camera_query.iter_mut() {
+    for mut transform in player_query.iter_mut() {
+        let x =
+            ((transform.translation.x + movement.x + map.tile_size / 2.) / map.tile_size) as usize;
+        let y =
+            ((transform.translation.y + movement.y + map.tile_size / 2.) / map.tile_size) as usize;
+        for collide in collider_query.iter() {
+            if collide.x == x && collide.y == y {
+                return;
+            }
+        }
         transform.translation += movement;
     }
-    for mut transform in player_query.iter_mut() {
+    for mut transform in camera_query.iter_mut() {
         transform.translation += movement;
     }
 }

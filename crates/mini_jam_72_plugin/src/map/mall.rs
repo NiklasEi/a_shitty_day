@@ -11,7 +11,7 @@ pub fn get_mall_map() -> MapData {
     path_map.insert('4', "objects/bed_4.png".to_owned());
 
     return MapData {
-        floors: vec![
+        layers: vec![
             "\
             #############\n\
             #############\n\
@@ -40,5 +40,6 @@ pub fn get_mall_map() -> MapData {
                 .to_owned(),
         ],
         path_map,
+        colliding_layers: vec![1],
     };
 }

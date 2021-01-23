@@ -6,7 +6,7 @@ pub fn get_second_mall_map() -> MapData {
     path_map.insert('#', "structure/woodenFloor.png".to_owned());
 
     return MapData {
-        floors: vec!["\
+        layers: vec!["\
             #############\n\
             ########t####\n\
             ###.#.#######\n\
@@ -20,5 +20,6 @@ pub fn get_second_mall_map() -> MapData {
             #############"
             .to_owned()],
         path_map,
+        colliding_layers: vec![],
     };
 }

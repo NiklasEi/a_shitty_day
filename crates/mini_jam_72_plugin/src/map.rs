@@ -50,7 +50,8 @@ pub struct PlayerCamera;
 pub struct Map {
     pub height: usize,
     pub width: usize,
-    pub floors: Vec<Vec<Vec<Tile>>>,
+    pub layers: Vec<Vec<Vec<Tile>>>,
+    pub colliding_layers: Vec<bool>,
     pub tile_size: f32,
 }
 
@@ -60,9 +61,15 @@ pub struct MapTile {
     pub tile: Tile,
 }
 
+pub struct Collide {
+    pub x: usize,
+    pub y: usize,
+}
+
 pub struct MapData {
-    floors: Vec<String>,
+    layers: Vec<String>,
     path_map: HashMap<char, String>,
+    colliding_layers: Vec<usize>,
 }
 
 impl Map {
@@ -70,11 +77,12 @@ impl Map {
         let mut map = Map {
             height: 0,
             width: 0,
-            floors: vec![],
+            layers: vec![],
+            colliding_layers: vec![],
             tile_size: 32.,
         };
 
-        for map_str in map_data.floors.iter() {
+        for (floor_index, map_str) in map_data.layers.iter().enumerate() {
             let mut floor = vec![];
             map.height = map_str.lines().count();
             for (row_index, line) in map_str.lines().enumerate() {
@@ -93,9 +101,11 @@ impl Map {
             }
             // otherwise my map is head down O.o
             floor.reverse();
-            map.floors.push(floor);
+            map.colliding_layers
+                .push(map_data.colliding_layers.contains(&floor_index));
+            map.layers.push(floor);
         }
-        map.width = map.floors.first().unwrap().first().unwrap().len();
+        map.width = map.layers.first().unwrap().first().unwrap().len();
 
         map
     }
@@ -134,30 +144,42 @@ fn render_map(
     asset_server: &Res<AssetServer>,
     materials: &mut ResMut<Assets<ColorMaterial>>,
 ) {
-    for floor in map.floors.iter() {
+    for (layer_index, layer) in map.layers.iter().enumerate() {
+        let collide = map
+            .colliding_layers
+            .get(layer_index)
+            .unwrap_or(&false)
+            .clone();
         for row in 0..map.height {
             for column in 0..map.width {
-                let tile = &floor[row][column];
+                let tile = &layer[row][column];
                 if let Some(path) = &tile.asset_path {
-                    commands
-                        .spawn(SpriteBundle {
-                            material: materials.add(
-                                asset_server
-                                    .get_handle(&("textures/".to_owned() + path)[..])
-                                    .into(),
-                            ),
-                            transform: Transform::from_translation(Vec3::new(
-                                column as f32 * map.tile_size,
-                                row as f32 * map.tile_size,
-                                0.,
-                            )),
-                            ..Default::default()
-                        })
-                        .with(MapTile {
-                            column,
-                            row,
-                            tile: tile.clone(),
-                        });
+                    let sprite = SpriteBundle {
+                        material: materials.add(
+                            asset_server
+                                .get_handle(&("textures/".to_owned() + path)[..])
+                                .into(),
+                        ),
+                        transform: Transform::from_translation(Vec3::new(
+                            column as f32 * map.tile_size,
+                            row as f32 * map.tile_size,
+                            0.,
+                        )),
+                        ..Default::default()
+                    };
+                    let tile = MapTile {
+                        column,
+                        row,
+                        tile: tile.clone(),
+                    };
+                    if collide {
+                        commands
+                            .spawn(sprite)
+                            .with(tile)
+                            .with(Collide { x: column, y: row });
+                    } else {
+                        commands.spawn(sprite).with(tile);
+                    }
                 }
             }
         }
