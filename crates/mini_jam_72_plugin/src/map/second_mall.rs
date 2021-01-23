@@ -1,4 +1,4 @@
-use crate::map::{Coordinate, MapData};
+use crate::map::MapData;
 use std::collections::HashMap;
 
 pub fn get_second_mall_map() -> MapData {
@@ -21,5 +21,6 @@ pub fn get_second_mall_map() -> MapData {
             .to_owned()],
         path_map,
         colliding_layers: vec![],
+        npcs: vec![],
     };
 }

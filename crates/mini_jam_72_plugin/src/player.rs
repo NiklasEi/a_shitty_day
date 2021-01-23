@@ -39,7 +39,7 @@ fn move_player(
     map: Res<Map>,
     mut camera_query: Query<&mut Transform, With<PlayerCamera>>,
     mut player_query: Query<&mut Transform, With<Player>>,
-    mut collider_query: Query<&Collide>,
+    collider_query: Query<&Collide>,
 ) {
     if actions.player_movement.is_none() {
         return;

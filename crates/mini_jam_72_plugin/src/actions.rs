@@ -1,5 +1,4 @@
 use crate::{AppState, STAGE};
-use bevy::input::mouse::{MouseMotion, MouseWheel};
 use bevy::prelude::*;
 
 pub struct ActionsPlugin;

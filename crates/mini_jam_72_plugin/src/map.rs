@@ -3,6 +3,7 @@ mod second_mall;
 
 use crate::map::mall::get_mall_map;
 use crate::map::second_mall::get_second_mall_map;
+use crate::ui::{CanTalk, ConversationId};
 use crate::{AppState, GameState, STAGE};
 use bevy::prelude::*;
 use std::collections::HashMap;
@@ -50,6 +51,7 @@ pub struct PlayerCamera;
 pub struct Map {
     pub height: usize,
     pub width: usize,
+    pub npcs: Vec<Npc>,
     pub layers: Vec<Vec<Vec<Tile>>>,
     pub colliding_layers: Vec<bool>,
     pub tile_size: f32,
@@ -68,8 +70,15 @@ pub struct Collide {
 
 pub struct MapData {
     layers: Vec<String>,
+    npcs: Vec<Npc>,
     path_map: HashMap<char, String>,
     colliding_layers: Vec<usize>,
+}
+
+#[derive(Debug)]
+pub struct Npc {
+    conversation_id: Option<ConversationId>,
+    position: Coordinate,
 }
 
 impl Map {
@@ -77,6 +86,7 @@ impl Map {
         let mut map = Map {
             height: 0,
             width: 0,
+            npcs: map_data.npcs,
             layers: vec![],
             colliding_layers: vec![],
             tile_size: 32.,
@@ -182,6 +192,19 @@ fn render_map(
                     }
                 }
             }
+        }
+    }
+
+    for npc in map.npcs.iter() {
+        let sprite = SpriteBundle {
+            material: materials.add(asset_server.load("character/mainCharacter.png").into()),
+            transform: Transform::from_translation(Vec3::new(npc.position.x, npc.position.y, 1.)),
+            ..Default::default()
+        };
+        if let Some(id) = npc.conversation_id {
+            commands.spawn(sprite).with(CanTalk { id });
+        } else {
+            commands.spawn(sprite);
         }
     }
 }
