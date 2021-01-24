@@ -31,4 +31,18 @@ pub fn get_mall_conversations() -> Conversations {
         },
     );
 
-    Conversations { conversations
+
+    let mut questions_and_answers = HashMap::default();
+    questions_and_answers.insert(
+        "Can you help me?".to_owned(),
+        vec!["No".to_owned()],
+    );
+    conversations.insert(
+        2,
+        Conversation {
+            initial_text: "Hi there. I am Klaus :)   ".to_owned(),
+            questions_and_answers,
+        },
+    );
+
+    Conversations { conversations }}
