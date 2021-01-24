@@ -47,6 +47,18 @@ pub fn get_mall_map() -> MapData {
                 x: 7. * 32.,
                 y: 7. * 32.,
             },
+        },Npc {
+            conversation_id: None,
+            position: Coordinate {
+                x: 2. * 32.,
+                y: 6. * 32.,
+            },
+        },Npc {
+            conversation_id: Some(2),
+            position: Coordinate {
+                x: 3. * 32.,
+                y: 2. * 32.,
+            },
         }],
     };
 }

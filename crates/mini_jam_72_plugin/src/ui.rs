@@ -4,7 +4,7 @@ use crate::ui::conversation::ConversationPlugin;
 use crate::{AppState, GameState, STAGE};
 use bevy::prelude::*;
 
-pub use conversation::{CanTalk, ConversationId};
+pub use conversation::{CanTalk, ConversationId, HideConversation};
 
 pub struct UiPlugin;
 
@@ -14,7 +14,8 @@ impl Plugin for UiPlugin {
             .on_state_enter(STAGE, AppState::InGame, init_ui.system())
             .add_plugin(ConversationPlugin)
             .on_state_update(STAGE, AppState::InGame, retry_system.system())
-            .on_state_update(STAGE, AppState::InGame, click_retry_button.system());
+            .on_state_update(STAGE, AppState::InGame, click_retry_button.system())
+            .on_state_exit(STAGE, AppState::InGame, remove_conversation_ui.system());
     }
 }
 
@@ -22,6 +23,9 @@ struct ButtonMaterials {
     normal: Handle<ColorMaterial>,
     hovered: Handle<ColorMaterial>,
 }
+
+pub struct ContinueConversationButton;
+pub struct ContinueConversationText;
 
 impl FromResources for ButtonMaterials {
     fn from_resources(resources: &Resources) -> Self {
@@ -37,29 +41,39 @@ struct RetryButton;
 
 struct ConversationText;
 
+pub struct ConversationUi;
+
 fn init_ui(
     commands: &mut Commands,
     asset_server: ResMut<AssetServer>,
-    game_state: Res<GameState>,
     mut color_materials: ResMut<Assets<ColorMaterial>>,
+    button_materials: Res<ButtonMaterials>,
 ) {
     let font = asset_server.load("fonts/FiraSans-Bold.ttf");
-    let material = color_materials.add(Color::NONE.into());
+    let material = color_materials.add(Color::GRAY.into());
     commands
         .spawn(CameraUiBundle::default())
         // root node
         .spawn(NodeBundle {
             style: Style {
-                position_type: PositionType::Absolute,
-                position: Rect {
-                    bottom: Val::Px(10.),
-                    ..Default::default()
+                margin: Rect {
+                    bottom: Val::Px(0.),
+                    left: Val::Auto,
+                    right: Val::Auto,
+                    top: Val::Auto
                 },
+                padding: Rect::all(Val::Px(10.)),
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
+                ..Default::default()
+            },
+            visible: Visible {
+                is_visible: false,
                 ..Default::default()
             },
             material,
             ..Default::default()
-        })
+        }).with(ConversationUi)
         .with_children(|parent| {
             parent
                 .spawn(TextBundle {
@@ -67,14 +81,53 @@ fn init_ui(
                         value: "".to_owned(),
                         font,
                         style: TextStyle {
-                            font_size: 40.0,
+                            font_size: 20.0,
                             color: Color::rgb(0.6, 0.6, 0.6),
                             ..Default::default()
                         },
                     },
                     ..Default::default()
                 })
-                .with(ConversationText);
+                .with(ConversationText)
+                .with(ConversationUi);
+            parent
+                .spawn(ButtonBundle {
+                    style: Style {
+                        size: Size::new(Val::Px(150.0), Val::Px(65.0)),
+                        margin: Rect::all(Val::Auto),
+                        justify_content: JustifyContent::Center,
+                        align_items: AlignItems::Center,
+                        ..Default::default()
+                    },
+                    material: button_materials.normal.clone(),
+                    visible: Visible {
+                        is_visible: false,
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                })
+                .with(ContinueConversationButton)
+                .with(ConversationUi)
+                .with_children(|parent| {
+                parent.spawn(TextBundle {
+                    text: Text {
+                        value: "".to_string(),
+                        font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+                        style: TextStyle {
+                            font_size: 20.0,
+                            color: Color::rgb(0.9, 0.9, 0.9),
+                            ..Default::default()
+                        },
+                    },
+                    visible: Visible {
+                        is_visible: false,
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                })
+                    .with(ContinueConversationText)
+                    .with(ConversationUi);
+            });
         });
 }
 
@@ -142,5 +195,11 @@ fn click_retry_button(
                 *material = button_materials.normal.clone();
             }
         }
+    }
+}
+
+fn remove_conversation_ui(commands: &mut Commands, conversation_query: Query<Entity, With<ConversationUi>>) {
+    for ui in conversation_query.iter() {
+        commands.despawn(ui);
     }
 }

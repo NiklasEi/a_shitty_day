@@ -40,6 +40,12 @@ pub struct Coordinate {
     pub y: f32,
 }
 
+impl Coordinate {
+    pub fn to_vec(&self) -> Vec2 {
+        Vec2::new(self.x, self.y)
+    }
+}
+
 #[derive(Default)]
 struct TileSpriteHandles {
     handles: Vec<HandleUntyped>,
@@ -126,6 +132,7 @@ fn initialize_map(
     mut tile_sprite_handles: ResMut<TileSpriteHandles>,
     game_state: Res<GameState>,
     asset_server: Res<AssetServer>,
+    mut camera_query: Query<&mut Transform, With<PlayerCamera>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
     tile_sprite_handles.handles = asset_server.load_folder("textures").unwrap();
@@ -133,16 +140,24 @@ fn initialize_map(
         Maps::Mall => Map::load_map(get_mall_map()),
         Maps::SecondMall => Map::load_map(get_second_mall_map()),
     };
-    commands
-        .spawn(Camera2dBundle {
-            transform: Transform::from_translation(Vec3::new(
-                game_state.player_spawn.x,
-                game_state.player_spawn.y,
-                10.,
-            )),
-            ..Camera2dBundle::default()
-        })
-        .with(PlayerCamera);
+    if let Some(mut camera) = camera_query.iter_mut().last() {
+        camera.translation = Vec3::new(
+            game_state.player_spawn.x,
+            game_state.player_spawn.y,
+            10.,
+        );
+    } else {
+        commands
+            .spawn(Camera2dBundle {
+                transform: Transform::from_translation(Vec3::new(
+                    game_state.player_spawn.x,
+                    game_state.player_spawn.y,
+                    10.,
+                )),
+                ..Camera2dBundle::default()
+            })
+            .with(PlayerCamera);
+    }
     render_map(commands, &map, &asset_server, &mut materials);
 
     commands.insert_resource(map);
