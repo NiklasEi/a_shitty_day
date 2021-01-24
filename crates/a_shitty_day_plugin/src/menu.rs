@@ -1,6 +1,6 @@
+use crate::assets::font_monogram;
 use crate::{AppState, STAGE};
 use bevy::prelude::*;
-use crate::assets::font_monogram;
 
 pub struct MenuPlugin;
 

@@ -4,8 +4,8 @@ use crate::ui::conversation::ConversationPlugin;
 use crate::{AppState, GameState, STAGE};
 use bevy::prelude::*;
 
-pub use conversation::{CanTalk, ConversationId, HideConversation};
 use crate::assets::font_monogram;
+pub use conversation::{CanTalk, ConversationId, HideConversation};
 
 pub struct UiPlugin;
 
