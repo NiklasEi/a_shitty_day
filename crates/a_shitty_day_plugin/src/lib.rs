@@ -4,6 +4,7 @@ mod map;
 mod menu;
 mod player;
 mod ui;
+mod assets;
 
 use crate::audio::InternalAudioPlugin;
 use crate::map::{Coordinate, MapPlugin, Maps, PlayerCamera};

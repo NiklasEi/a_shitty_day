@@ -1,5 +1,6 @@
 use crate::{AppState, STAGE};
 use bevy::prelude::*;
+use crate::assets::font_monogram;
 
 pub struct MenuPlugin;
 
@@ -51,7 +52,7 @@ fn setup_menu(
             parent.spawn(TextBundle {
                 text: Text {
                     value: "Play".to_string(),
-                    font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+                    font: asset_server.load(font_monogram()),
                     style: TextStyle {
                         font_size: 40.0,
                         color: Color::rgb(0.9, 0.9, 0.9),

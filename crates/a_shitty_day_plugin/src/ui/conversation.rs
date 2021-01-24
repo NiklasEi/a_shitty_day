@@ -81,7 +81,6 @@ fn show_conversation(
     conversations: Res<Conversations>,
 ) {
     if let Some(id) = conversation_reader.latest(&conversation_id) {
-        println!("show");
         for mut ui in ui_query.iter_mut() {
             ui.is_visible = true;
         }
@@ -105,7 +104,6 @@ fn hide_conversation(
     mut ui_query: Query<&mut Visible, With<ConversationUi>>,
 ) {
     if conversation_reader.latest(&conversation).is_some() {
-        println!("hiding");
         for mut ui in ui_query.iter_mut() {
             ui.is_visible = false;
         }

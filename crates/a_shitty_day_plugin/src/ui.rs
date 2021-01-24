@@ -5,6 +5,7 @@ use crate::{AppState, GameState, STAGE};
 use bevy::prelude::*;
 
 pub use conversation::{CanTalk, ConversationId, HideConversation};
+use crate::assets::font_monogram;
 
 pub struct UiPlugin;
 
@@ -49,7 +50,7 @@ fn init_ui(
     mut color_materials: ResMut<Assets<ColorMaterial>>,
     button_materials: Res<ButtonMaterials>,
 ) {
-    let font = asset_server.load("fonts/FiraSans-Bold.ttf");
+    let font = asset_server.load(font_monogram());
     let material = color_materials.add(Color::GRAY.into());
     commands
         .spawn(CameraUiBundle::default())
@@ -114,7 +115,7 @@ fn init_ui(
                         .spawn(TextBundle {
                             text: Text {
                                 value: "".to_string(),
-                                font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+                                font: asset_server.load(font_monogram()),
                                 style: TextStyle {
                                     font_size: 20.0,
                                     color: Color::rgb(0.9, 0.9, 0.9),
@@ -157,7 +158,7 @@ fn retry_system(
                 parent.spawn(TextBundle {
                     text: Text {
                         value: "Restart".to_string(),
-                        font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+                        font: asset_server.load(font_monogram()),
                         style: TextStyle {
                             font_size: 40.0,
                             color: Color::rgb(0.9, 0.9, 0.9),
