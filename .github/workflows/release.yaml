@@ -50,8 +50,8 @@ jobs:
         with:
           toolchain: stable
           override: true
-      - name: Install Dependencies
-        run: sudo apt-get install pkg-config libx11-dev libasound2-dev libudev-dev
+#      - name: Install Dependencies
+#        run: sudo apt-get install pkg-config libx11-dev libasound2-dev libudev-dev
       - name: Build and release
         run: |
           cargo build --release
