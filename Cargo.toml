@@ -1,7 +1,7 @@
 [package]
 name = "a_shitty_day"
 description = "You keep dying and reliving the same day over and over"
-version = "1.4.1-dev"
+version = "0.0.0"
 authors = ["Niklas Eicker <git@nikl.me>"]
 edition = "2018"
 publish = false

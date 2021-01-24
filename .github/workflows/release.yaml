@@ -9,34 +9,34 @@ on:
       - "v[0-9]+.[0-9]+.[0-9]+*"
 
 jobs:
-#  build-macOS:
-#    runs-on: macOS-latest
-#
-#    steps:
-#      - name: Get tag
-#        id: tag
-#        uses: dawidd6/action-get-tag@v1
-#      - uses: actions/checkout@v2
-#      - uses: actions-rs/toolchain@v1
-#        with:
-#          toolchain: stable
-#          override: true
-#      - name: Build and release
-#        run: |
-#          cargo build --release
-#          mkdir -p a_shitty_day.app/Contents/MacOS
-#          cp -r assets/ a_shitty_day.app/Contents/MacOS/
-#          cp target/release/a_shitty_day a_shitty_day.app/Contents/MacOS/
-#          strip a_shitty_day.app/Contents/MacOS/a_shitty_day
-#          hdiutil create -fs HFS+ -volname "a_shitty_day" -srcfolder a_shitty_day.app a_shitty_day.dmg
-#      - name: Upload binaries to release
-#        uses: svenstaro/upload-release-action@v2
-#        with:
-#          repo_token: ${{ secrets.GITHUB_TOKEN }}
-#          file: a_shitty_day.dmg
-#          asset_name: a_shitty_day_macOS_${{ steps.tag.outputs.tag }}.dmg
-#          tag: ${{ github.ref }}
-#          overwrite: true
+  build-macOS:
+    runs-on: macOS-latest
+
+    steps:
+      - name: Get tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+      - name: Build and release
+        run: |
+          cargo build --release
+          mkdir -p a_shitty_day.app/Contents/MacOS
+          cp -r assets/ a_shitty_day.app/Contents/MacOS/
+          cp target/release/a_shitty_day a_shitty_day.app/Contents/MacOS/
+          strip a_shitty_day.app/Contents/MacOS/a_shitty_day
+          hdiutil create -fs HFS+ -volname "a_shitty_day" -srcfolder a_shitty_day.app a_shitty_day.dmg
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: a_shitty_day.dmg
+          asset_name: a_shitty_day_macOS_${{ steps.tag.outputs.tag }}.dmg
+          tag: ${{ github.ref }}
+          overwrite: true
 
   build-linux:
     runs-on: ubuntu-latest
