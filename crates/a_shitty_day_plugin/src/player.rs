@@ -1,9 +1,9 @@
 use crate::actions::Actions;
 use crate::map::{Collide, Map, PlayerCamera};
+use crate::ui::HideConversation;
 use crate::{AppState, GameState, STAGE};
 use bevy::prelude::*;
 use std::f32::consts::PI;
-use crate::ui::HideConversation;
 
 pub struct PlayerPlugin;
 
@@ -62,10 +62,10 @@ fn move_player(
                 .unwrap()
                 .angle_between(Vec2::new(0., 1.)),
         );
-        let x =
-            ((player_transform.translation.x + movement.x + map.tile_size / 2.) / map.tile_size) as usize;
-        let y =
-            ((player_transform.translation.y + movement.y + map.tile_size / 2.) / map.tile_size) as usize;
+        let x = ((player_transform.translation.x + movement.x + map.tile_size / 2.) / map.tile_size)
+            as usize;
+        let y = ((player_transform.translation.y + movement.y + map.tile_size / 2.) / map.tile_size)
+            as usize;
         for collide in collider_query.iter() {
             if collide.x == x && collide.y == y {
                 return;
@@ -76,7 +76,11 @@ fn move_player(
             transform.translation = player_transform.translation;
         }
         if let Some(pos) = &game_state.talking_to {
-            if pos.to_vec().distance(Vec2::new(player_transform.translation.x, player_transform.translation.y)) > 32. {
+            if pos.to_vec().distance(Vec2::new(
+                player_transform.translation.x,
+                player_transform.translation.y,
+            )) > 32.
+            {
                 hide_conversation.send(HideConversation);
                 game_state.talking_to = None;
             }
@@ -84,9 +88,7 @@ fn move_player(
     }
 }
 
-fn remove_player(
-    commands: &mut Commands,
-    player_query: Query<Entity, With<Player>>,) {
+fn remove_player(commands: &mut Commands, player_query: Query<Entity, With<Player>>) {
     for player in player_query.iter() {
         commands.despawn(player);
     }

@@ -17,12 +17,8 @@ pub fn get_mall_conversations() -> Conversations {
         },
     );
 
-
     let mut questions_and_answers = HashMap::default();
-    questions_and_answers.insert(
-        "Can you help me?".to_owned(),
-        vec!["No".to_owned()],
-    );
+    questions_and_answers.insert("Can you help me?".to_owned(), vec!["No".to_owned()]);
     conversations.insert(
         2,
         Conversation {
@@ -31,12 +27,8 @@ pub fn get_mall_conversations() -> Conversations {
         },
     );
 
-
     let mut questions_and_answers = HashMap::default();
-    questions_and_answers.insert(
-        "Can you help me?".to_owned(),
-        vec!["No".to_owned()],
-    );
+    questions_and_answers.insert("Can you help me?".to_owned(), vec!["No".to_owned()]);
     conversations.insert(
         2,
         Conversation {
@@ -45,4 +37,5 @@ pub fn get_mall_conversations() -> Conversations {
         },
     );
 
-    Conversations { conversations }}
+    Conversations { conversations }
+}

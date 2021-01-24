@@ -60,7 +60,7 @@ fn init_ui(
                     bottom: Val::Px(0.),
                     left: Val::Auto,
                     right: Val::Auto,
-                    top: Val::Auto
+                    top: Val::Auto,
                 },
                 padding: Rect::all(Val::Px(10.)),
                 justify_content: JustifyContent::Center,
@@ -73,7 +73,8 @@ fn init_ui(
             },
             material,
             ..Default::default()
-        }).with(ConversationUi)
+        })
+        .with(ConversationUi)
         .with_children(|parent| {
             parent
                 .spawn(TextBundle {
@@ -109,25 +110,26 @@ fn init_ui(
                 .with(ContinueConversationButton)
                 .with(ConversationUi)
                 .with_children(|parent| {
-                parent.spawn(TextBundle {
-                    text: Text {
-                        value: "".to_string(),
-                        font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                        style: TextStyle {
-                            font_size: 20.0,
-                            color: Color::rgb(0.9, 0.9, 0.9),
+                    parent
+                        .spawn(TextBundle {
+                            text: Text {
+                                value: "".to_string(),
+                                font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+                                style: TextStyle {
+                                    font_size: 20.0,
+                                    color: Color::rgb(0.9, 0.9, 0.9),
+                                    ..Default::default()
+                                },
+                            },
+                            visible: Visible {
+                                is_visible: false,
+                                ..Default::default()
+                            },
                             ..Default::default()
-                        },
-                    },
-                    visible: Visible {
-                        is_visible: false,
-                        ..Default::default()
-                    },
-                    ..Default::default()
-                })
-                    .with(ContinueConversationText)
-                    .with(ConversationUi);
-            });
+                        })
+                        .with(ContinueConversationText)
+                        .with(ConversationUi);
+                });
         });
 }
 
@@ -198,7 +200,10 @@ fn click_retry_button(
     }
 }
 
-fn remove_conversation_ui(commands: &mut Commands, conversation_query: Query<Entity, With<ConversationUi>>) {
+fn remove_conversation_ui(
+    commands: &mut Commands,
+    conversation_query: Query<Entity, With<ConversationUi>>,
+) {
     for ui in conversation_query.iter() {
         commands.despawn(ui);
     }

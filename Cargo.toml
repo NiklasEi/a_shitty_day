@@ -1,6 +1,6 @@
 [package]
-name = "mini_jam_72"
-description = "A tower-defense game with some puzzle aspects"
+name = "a_shitty_day"
+description = "You keep dying and reliving the same day over and over"
 version = "1.4.1-dev"
 authors = ["Niklas Eicker <git@nikl.me>"]
 edition = "2018"
@@ -12,21 +12,20 @@ default = [
     "bevy/bevy_winit",
     "bevy/render",
     "bevy/png",
-    "mini_jam_72_plugin/default",
+    "a_shitty_day_plugin/default",
     "bevy/bevy_wgpu"
 ]
 
 [dependencies]
 bevy = {version="0.4.0", default-features=false}
 winit = "0.24.0"
-mini_jam_72_plugin = { path = "crates/mini_jam_72_plugin", version = "0.1.0" }
+a_shitty_day_plugin = { path = "crates/a_shitty_day_plugin", version = "0.1.0" }
 
 [build-dependencies]
 embed-resource = "1.4"
 
 [package.metadata.bundle]
-name = "mini_jam_72"
-identifier = "dev.nikl.mini_jam_72"
+name = "a_shitty_day"
+identifier = "dev.nikl.a_shitty_day"
 icon = ["build/*.png"]
 resources = ["assets"]
-short_description = "A tower-defense game with some puzzle aspects"

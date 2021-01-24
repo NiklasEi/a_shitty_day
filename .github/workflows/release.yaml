@@ -24,17 +24,17 @@ jobs:
 #      - name: Build and release
 #        run: |
 #          cargo build --release
-#          mkdir -p mini_jam_72.app/Contents/MacOS
-#          cp -r assets/ mini_jam_72.app/Contents/MacOS/
-#          cp target/release/mini_jam_72 mini_jam_72.app/Contents/MacOS/
-#          strip mini_jam_72.app/Contents/MacOS/mini_jam_72
-#          hdiutil create -fs HFS+ -volname "mini_jam_72" -srcfolder mini_jam_72.app mini_jam_72.dmg
+#          mkdir -p a_shitty_day.app/Contents/MacOS
+#          cp -r assets/ a_shitty_day.app/Contents/MacOS/
+#          cp target/release/a_shitty_day a_shitty_day.app/Contents/MacOS/
+#          strip a_shitty_day.app/Contents/MacOS/a_shitty_day
+#          hdiutil create -fs HFS+ -volname "a_shitty_day" -srcfolder a_shitty_day.app a_shitty_day.dmg
 #      - name: Upload binaries to release
 #        uses: svenstaro/upload-release-action@v2
 #        with:
 #          repo_token: ${{ secrets.GITHUB_TOKEN }}
-#          file: mini_jam_72.dmg
-#          asset_name: mini_jam_72_macOS_${{ steps.tag.outputs.tag }}.dmg
+#          file: a_shitty_day.dmg
+#          asset_name: a_shitty_day_macOS_${{ steps.tag.outputs.tag }}.dmg
 #          tag: ${{ github.ref }}
 #          overwrite: true
 
@@ -55,20 +55,20 @@ jobs:
       - name: Build and release
         run: |
           cargo build --release
-          strip target/release/mini_jam_72
+          strip target/release/a_shitty_day
       - name: Prepare assets
         run: |
           mkdir target/release/assets && cp -r assets target/release/assets
       - uses: papeloto/action-zip@v1
         with:
-          files: target/release/assets/ target/release/mini_jam_72
-          dest: mini_jam_72_linux.zip
+          files: target/release/assets/ target/release/a_shitty_day
+          dest: a_shitty_day_linux.zip
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: mini_jam_72_linux.zip
-          asset_name: mini_jam_72_linux_${{ steps.tag.outputs.tag }}.zip
+          file: a_shitty_day_linux.zip
+          asset_name: a_shitty_day_linux_${{ steps.tag.outputs.tag }}.zip
           tag: ${{ github.ref }}
           overwrite: true
 
@@ -92,13 +92,13 @@ jobs:
           mkdir target/release/assets && cp -r assets target/release/assets
       - uses: papeloto/action-zip@v1
         with:
-          files: target/release/assets/ target/release/mini_jam_72.exe
-          dest: mini_jam_72_windows.zip
+          files: target/release/assets/ target/release/a_shitty_day.exe
+          dest: a_shitty_day_windows.zip
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: mini_jam_72_windows.zip
-          asset_name: mini_jam_72_windows_${{ steps.tag.outputs.tag }}.zip
+          file: a_shitty_day_windows.zip
+          asset_name: a_shitty_day_windows_${{ steps.tag.outputs.tag }}.zip
           tag: ${{ github.ref }}
           overwrite: true

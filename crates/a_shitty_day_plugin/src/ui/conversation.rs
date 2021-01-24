@@ -1,9 +1,9 @@
 mod mall;
 
-use crate::map::{Maps, Coordinate};
+use crate::map::{Coordinate, Maps};
 use crate::player::Player;
 use crate::ui::conversation::mall::get_mall_conversations;
-use crate::ui::{ConversationText, ConversationUi, ContinueConversationText};
+use crate::ui::{ContinueConversationText, ConversationText, ConversationUi};
 use crate::{AppState, GameState, STAGE};
 use bevy::ecs::bevy_utils::HashMap;
 use bevy::prelude::*;
@@ -64,7 +64,7 @@ fn trigger_conversation(
                 conversation_id.send(can_talk.id);
                 game_state.talking_to = Some(Coordinate {
                     x: conversation_position.translation.x,
-                    y: conversation_position.translation.y
+                    y: conversation_position.translation.y,
                 });
                 return;
             }

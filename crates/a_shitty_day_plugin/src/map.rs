@@ -141,11 +141,7 @@ fn initialize_map(
         Maps::SecondMall => Map::load_map(get_second_mall_map()),
     };
     if let Some(mut camera) = camera_query.iter_mut().last() {
-        camera.translation = Vec3::new(
-            game_state.player_spawn.x,
-            game_state.player_spawn.y,
-            10.,
-        );
+        camera.translation = Vec3::new(game_state.player_spawn.x, game_state.player_spawn.y, 10.);
     } else {
         commands
             .spawn(Camera2dBundle {

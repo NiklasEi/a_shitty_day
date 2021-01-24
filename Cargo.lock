@@ -7,6 +7,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fe438c63458706e03479442743baae6c88256498e6431708f6dfc520a26515d3"
 
 [[package]]
+name = "a_shitty_day"
+version = "1.4.1-dev"
+dependencies = [
+ "a_shitty_day_plugin",
+ "bevy",
+ "embed-resource",
+ "winit",
+]
+
+[[package]]
+name = "a_shitty_day_plugin"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_improved_audio",
+]
+
+[[package]]
 name = "ab_glyph"
 version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2124,24 +2142,6 @@ dependencies = [
  "foreign-types",
  "log",
  "objc",
-]
-
-[[package]]
-name = "mini_jam_72"
-version = "1.4.1-dev"
-dependencies = [
- "bevy",
- "embed-resource",
- "mini_jam_72_plugin",
- "winit",
-]
-
-[[package]]
-name = "mini_jam_72_plugin"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "bevy_improved_audio",
 ]
 
 [[package]]
