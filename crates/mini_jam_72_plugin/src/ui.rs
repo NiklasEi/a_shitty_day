@@ -1,13 +1,18 @@
+mod conversation;
+
+use crate::ui::conversation::ConversationPlugin;
 use crate::{AppState, GameState, STAGE};
 use bevy::prelude::*;
+
+pub use conversation::{CanTalk, ConversationId};
 
 pub struct UiPlugin;
 
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app.init_resource::<ButtonMaterials>()
-            .on_state_enter(STAGE, AppState::InGame, init_life.system())
-            .on_state_update(STAGE, AppState::InGame, update_game_state.system())
+            .on_state_enter(STAGE, AppState::InGame, init_ui.system())
+            .add_plugin(ConversationPlugin)
             .on_state_update(STAGE, AppState::InGame, retry_system.system())
             .on_state_update(STAGE, AppState::InGame, click_retry_button.system());
     }
@@ -30,11 +35,9 @@ impl FromResources for ButtonMaterials {
 
 struct RetryButton;
 
-struct HealthText;
+struct ConversationText;
 
-struct ScoreText;
-
-fn init_life(
+fn init_ui(
     commands: &mut Commands,
     asset_server: ResMut<AssetServer>,
     game_state: Res<GameState>,
@@ -49,8 +52,7 @@ fn init_life(
             style: Style {
                 position_type: PositionType::Absolute,
                 position: Rect {
-                    left: Val::Px(10.),
-                    top: Val::Px(10.),
+                    bottom: Val::Px(10.),
                     ..Default::default()
                 },
                 ..Default::default()
@@ -62,7 +64,7 @@ fn init_life(
             parent
                 .spawn(TextBundle {
                     text: Text {
-                        value: format!("Health: {}", game_state.health),
+                        value: "".to_owned(),
                         font,
                         style: TextStyle {
                             font_size: 40.0,
@@ -72,55 +74,8 @@ fn init_life(
                     },
                     ..Default::default()
                 })
-                .with(HealthText);
+                .with(ConversationText);
         });
-    let font = asset_server.load("fonts/FiraSans-Bold.ttf");
-    let material = color_materials.add(Color::NONE.into());
-    commands
-        .spawn(CameraUiBundle::default())
-        // root node
-        .spawn(NodeBundle {
-            style: Style {
-                position_type: PositionType::Absolute,
-                position: Rect {
-                    right: Val::Px(10.),
-                    top: Val::Px(10.),
-                    ..Default::default()
-                },
-                ..Default::default()
-            },
-            material,
-            ..Default::default()
-        })
-        .with_children(|parent| {
-            parent
-                .spawn(TextBundle {
-                    text: Text {
-                        value: format!("Score: {}", game_state.score),
-                        font,
-                        style: TextStyle {
-                            font_size: 40.0,
-                            color: Color::rgb(0.6, 0.6, 0.6),
-                            ..Default::default()
-                        },
-                    },
-                    ..Default::default()
-                })
-                .with(ScoreText);
-        });
-}
-
-fn update_game_state(
-    game_state: ChangedRes<GameState>,
-    mut health_query: Query<&mut Text, With<HealthText>>,
-    mut score_query: Query<&mut Text, With<ScoreText>>,
-) {
-    for mut text in health_query.iter_mut() {
-        text.value = format!("Health: {}", game_state.health);
-    }
-    for mut text in score_query.iter_mut() {
-        text.value = format!("Score: {}", game_state.score);
-    }
 }
 
 fn retry_system(

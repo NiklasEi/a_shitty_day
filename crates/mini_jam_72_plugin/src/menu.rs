@@ -37,7 +37,7 @@ fn setup_menu(
         .spawn(CameraUiBundle::default())
         .spawn(ButtonBundle {
             style: Style {
-                size: Size::new(Val::Px(150.0), Val::Px(65.0)),
+                size: Size::new(Val::Px(120.0), Val::Px(50.0)),
                 margin: Rect::all(Val::Auto),
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,

@@ -1,4 +1,4 @@
-use crate::map::{Coordinate, MapData};
+use crate::map::{Coordinate, MapData, Npc};
 use std::collections::HashMap;
 
 pub fn get_mall_map() -> MapData {
@@ -41,5 +41,12 @@ pub fn get_mall_map() -> MapData {
         ],
         path_map,
         colliding_layers: vec![1],
+        npcs: vec![Npc {
+            conversation_id: Some(1),
+            position: Coordinate {
+                x: 7. * 32.,
+                y: 7. * 32.,
+            },
+        }],
     };
 }

@@ -7,7 +7,7 @@ use mini_jam_72_plugin::GamePlugin;
 #[cfg(target_arch = "wasm32")]
 use bevy_webgl2;
 
-use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, PrintDiagnosticsPlugin};
+// use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, PrintDiagnosticsPlugin};
 
 #[bevy_main]
 fn main() {
@@ -24,8 +24,8 @@ fn main() {
     #[cfg(target_arch = "wasm32")]
     app.add_plugin(bevy_webgl2::WebGL2Plugin);
 
-    app.add_plugin(FrameTimeDiagnosticsPlugin::default());
-    app.add_plugin(PrintDiagnosticsPlugin::default());
+    // app.add_plugin(FrameTimeDiagnosticsPlugin::default());
+    // app.add_plugin(PrintDiagnosticsPlugin::default());
 
     app.add_plugin(GamePlugin).run();
 }

@@ -2,6 +2,7 @@ use crate::actions::Actions;
 use crate::map::{Collide, Map, PlayerCamera};
 use crate::{AppState, GameState, STAGE};
 use bevy::prelude::*;
+use std::f32::consts::PI;
 
 pub struct PlayerPlugin;
 
@@ -39,7 +40,7 @@ fn move_player(
     map: Res<Map>,
     mut camera_query: Query<&mut Transform, With<PlayerCamera>>,
     mut player_query: Query<&mut Transform, With<Player>>,
-    mut collider_query: Query<&Collide>,
+    collider_query: Query<&Collide>,
 ) {
     if actions.player_movement.is_none() {
         return;
@@ -60,6 +61,12 @@ fn move_player(
                 return;
             }
         }
+        transform.rotation = Quat::from_rotation_z(
+            -1. * actions
+                .player_movement
+                .unwrap()
+                .angle_between(Vec2::new(0., 1.)),
+        );
         transform.translation += movement;
     }
     for mut transform in camera_query.iter_mut() {
