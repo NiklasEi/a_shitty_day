@@ -6,11 +6,27 @@ pub fn get_mall_conversations() -> Conversations {
 
     let mut questions_and_answers = HashMap::default();
     questions_and_answers.insert(
+        "Help!".to_owned(),
+        vec![
+            "Run around and talk to people   \nMaybe you can figure out what is going on"
+                .to_owned(),
+        ],
+    );
+    conversations.insert(
+        1,
+        Conversation {
+            initial_text: "You are a Llama...   \nFind out why and try to escape   \nYou can walk around with WASD ;)   ".to_owned(),
+            questions_and_answers,
+        },
+    );
+
+    let mut questions_and_answers = HashMap::default();
+    questions_and_answers.insert(
         "Are you dumb?".to_owned(),
         vec!["Yes I am".to_owned(), "Are you?".to_owned()],
     );
     conversations.insert(
-        1,
+        2,
         Conversation {
             initial_text: "Hi there. This is a very long sentence that is hopefully   \nspiked with some line breaks especially when getting   \ntoo long for the whole window.".to_owned(),
             questions_and_answers,
@@ -20,17 +36,7 @@ pub fn get_mall_conversations() -> Conversations {
     let mut questions_and_answers = HashMap::default();
     questions_and_answers.insert("Can you help me?".to_owned(), vec!["No".to_owned()]);
     conversations.insert(
-        2,
-        Conversation {
-            initial_text: "Hi there. I am Klaus :)   ".to_owned(),
-            questions_and_answers,
-        },
-    );
-
-    let mut questions_and_answers = HashMap::default();
-    questions_and_answers.insert("Can you help me?".to_owned(), vec!["No".to_owned()]);
-    conversations.insert(
-        2,
+        3,
         Conversation {
             initial_text: "Hi there. I am Klaus :)   ".to_owned(),
             questions_and_answers,

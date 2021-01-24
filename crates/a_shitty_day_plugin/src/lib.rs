@@ -58,7 +58,7 @@ impl Default for GameState {
             score: 0,
             enemy_health: 1,
             current_map: Maps::Mall,
-            player_spawn: Coordinate { x: 200., y: 200. },
+            player_spawn: Coordinate { x: 144., y: 288. },
             talking_to: None,
         }
     }

@@ -85,7 +85,10 @@ pub struct MapData {
 pub struct Npc {
     conversation_id: Option<ConversationId>,
     position: Coordinate,
+    asset: Option<String>,
 }
+
+pub type NpcPosition = Coordinate;
 
 impl Map {
     pub fn load_map(map_data: MapData) -> Self {
@@ -207,15 +210,38 @@ fn render_map(
     }
 
     for npc in map.npcs.iter() {
-        let sprite = SpriteBundle {
-            material: materials.add(asset_server.load("character/mainCharacter.png").into()),
-            transform: Transform::from_translation(Vec3::new(npc.position.x, npc.position.y, 1.)),
-            ..Default::default()
-        };
-        if let Some(id) = npc.conversation_id {
-            commands.spawn(sprite).with(CanTalk { id });
+        if let Some(asset) = &npc.asset {
+            let sprite = SpriteBundle {
+                material: materials.add(asset_server.load(&asset[..]).into()),
+                transform: Transform::from_translation(Vec3::new(
+                    npc.position.x,
+                    npc.position.y,
+                    1.,
+                )),
+                ..Default::default()
+            };
+            if let Some(id) = npc.conversation_id {
+                commands
+                    .spawn(sprite)
+                    .with(CanTalk { id })
+                    .with(NpcPosition {
+                        x: npc.position.x,
+                        y: npc.position.y,
+                    });
+            } else {
+                commands.spawn(sprite).with(NpcPosition {
+                    x: npc.position.x,
+                    y: npc.position.y,
+                });
+            }
         } else {
-            commands.spawn(sprite);
+            if let Some(id) = npc.conversation_id {
+                println!("spawning {:?}", id);
+                commands.spawn(CanTalk { id }).with(NpcPosition {
+                    x: npc.position.x,
+                    y: npc.position.y,
+                });
+            }
         }
     }
 }

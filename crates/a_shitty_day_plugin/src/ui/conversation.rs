@@ -1,6 +1,6 @@
 mod mall;
 
-use crate::map::{Coordinate, Maps};
+use crate::map::{Coordinate, Maps, NpcPosition};
 use crate::player::Player;
 use crate::ui::conversation::mall::get_mall_conversations;
 use crate::ui::{ContinueConversationText, ConversationText, ConversationUi};
@@ -24,6 +24,7 @@ impl Plugin for ConversationPlugin {
 pub type ConversationId = usize;
 pub struct HideConversation;
 
+#[derive(Bundle, Debug)]
 pub struct CanTalk {
     pub id: ConversationId,
 }
@@ -48,7 +49,7 @@ fn load_conversations(commands: &mut Commands, game_state: Res<GameState>) {
 fn trigger_conversation(
     mut game_state: ResMut<GameState>,
     mut conversation_id: ResMut<Events<ConversationId>>,
-    can_talk_query: Query<(&Transform, &CanTalk)>,
+    can_talk_query: Query<(&NpcPosition, &CanTalk)>,
     player_query: Query<&Transform, With<Player>>,
 ) {
     if game_state.talking_to.is_some() {
@@ -56,15 +57,16 @@ fn trigger_conversation(
     }
     for player_position in player_query.iter() {
         for (conversation_position, can_talk) in can_talk_query.iter() {
-            if player_position
-                .translation
-                .distance(conversation_position.translation)
-                < 32.
+            if player_position.translation.distance(Vec3::new(
+                conversation_position.x,
+                conversation_position.y,
+                0.,
+            )) < 32.
             {
                 conversation_id.send(can_talk.id);
                 game_state.talking_to = Some(Coordinate {
-                    x: conversation_position.translation.x,
-                    y: conversation_position.translation.y,
+                    x: conversation_position.x,
+                    y: conversation_position.y,
                 });
                 return;
             }
@@ -102,10 +104,14 @@ fn hide_conversation(
     mut conversation_reader: Local<EventReader<HideConversation>>,
     conversation: Res<Events<HideConversation>>,
     mut ui_query: Query<&mut Visible, With<ConversationUi>>,
+    mut conversation_text_query: Query<&mut Text, With<ConversationUi>>,
 ) {
     if conversation_reader.latest(&conversation).is_some() {
         for mut ui in ui_query.iter_mut() {
             ui.is_visible = false;
+        }
+        for mut text in conversation_text_query.iter_mut() {
+            text.value = "".to_owned();
         }
     }
 }

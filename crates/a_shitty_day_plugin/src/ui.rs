@@ -70,7 +70,7 @@ fn init_ui(
             },
             visible: Visible {
                 is_visible: false,
-                ..Default::default()
+                is_transparent: false,
             },
             material,
             ..Default::default()
@@ -104,7 +104,7 @@ fn init_ui(
                     material: button_materials.normal.clone(),
                     visible: Visible {
                         is_visible: false,
-                        ..Default::default()
+                        is_transparent: false,
                     },
                     ..Default::default()
                 })
@@ -124,7 +124,7 @@ fn init_ui(
                             },
                             visible: Visible {
                                 is_visible: false,
-                                ..Default::default()
+                                is_transparent: false,
                             },
                             ..Default::default()
                         })
