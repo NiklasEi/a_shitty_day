@@ -11,11 +11,15 @@ pub struct Player;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut AppBuilder) {
-        app.on_state_enter(STAGE, AppState::InGame, spawn_player.system())
+        app.add_event::<DeathEvent>()
+            .on_state_enter(STAGE, AppState::InGame, spawn_player.system())
             .on_state_update(STAGE, AppState::InGame, move_player.system())
+            .on_state_update(STAGE, AppState::InGame, handle_death.system())
             .on_state_exit(STAGE, AppState::InGame, remove_player.system());
     }
 }
+
+pub struct DeathEvent;
 
 fn spawn_player(
     game_state: Res<GameState>,
@@ -72,6 +76,7 @@ fn move_player(
             }
         }
         player_transform.translation += movement;
+        // println!("player position {:?}", player_transform.translation);
         for mut transform in camera_query.iter_mut() {
             transform.translation = player_transform.translation;
         }
@@ -85,6 +90,16 @@ fn move_player(
                 game_state.talking_to = None;
             }
         }
+    }
+}
+
+fn handle_death(
+    mut state: ResMut<State<AppState>>,
+    mut death_reader: Local<EventReader<DeathEvent>>,
+    death_event: Res<Events<DeathEvent>>,
+) {
+    if death_reader.latest(&death_event).is_some() {
+        state.set_next(AppState::RetryGame).unwrap();
     }
 }
 

@@ -16,7 +16,7 @@ impl Plugin for UiPlugin {
             .add_plugin(ConversationPlugin)
             .on_state_update(STAGE, AppState::InGame, retry_system.system())
             .on_state_update(STAGE, AppState::InGame, click_retry_button.system())
-            .on_state_exit(STAGE, AppState::InGame, remove_conversation_ui.system());
+            .on_state_exit(STAGE, AppState::InGame, clean_up_ui.system());
     }
 }
 
@@ -172,23 +172,18 @@ fn retry_system(
 }
 
 fn click_retry_button(
-    commands: &mut Commands,
     button_materials: Res<ButtonMaterials>,
     mut state: ResMut<State<AppState>>,
     mut game_state: ResMut<GameState>,
     mut interaction_query: Query<
-        (Entity, &Interaction, &mut Handle<ColorMaterial>, &Children),
-        (Mutated<Interaction>, With<Button>),
+        (&Interaction, &mut Handle<ColorMaterial>),
+        (Mutated<Interaction>, With<RetryButton>),
     >,
-    text_query: Query<Entity, With<Text>>,
 ) {
-    for (button, interaction, mut material, children) in interaction_query.iter_mut() {
-        let text = text_query.get(children[0]).unwrap();
+    for (interaction, mut material) in interaction_query.iter_mut() {
         match *interaction {
             Interaction::Clicked => {
                 *game_state = GameState::default();
-                commands.despawn(button);
-                commands.despawn(text);
                 state.set_next(AppState::RetryGame).unwrap();
             }
             Interaction::Hovered => {
@@ -201,11 +196,15 @@ fn click_retry_button(
     }
 }
 
-fn remove_conversation_ui(
+fn clean_up_ui(
     commands: &mut Commands,
     conversation_query: Query<Entity, With<ConversationUi>>,
+    retry_query: Query<Entity, With<RetryButton>>,
 ) {
     for ui in conversation_query.iter() {
         commands.despawn(ui);
+    }
+    for retry in retry_query.iter() {
+        commands.despawn_recursive(retry);
     }
 }

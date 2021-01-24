@@ -1,18 +1,20 @@
 mod actions;
 mod assets;
 mod audio;
+mod events;
 mod map;
 mod menu;
 mod player;
 mod ui;
 
+use crate::actions::ActionsPlugin;
 use crate::audio::InternalAudioPlugin;
+use crate::events::EventsPlugin;
 use crate::map::{Coordinate, MapPlugin, Maps, PlayerCamera};
 use crate::menu::MenuPlugin;
 use crate::player::PlayerPlugin;
 use crate::ui::UiPlugin;
 
-use crate::actions::ActionsPlugin;
 use bevy::prelude::*;
 
 pub struct GamePlugin;
@@ -37,6 +39,7 @@ impl Plugin for GamePlugin {
             .add_plugin(MenuPlugin)
             .add_plugin(ActionsPlugin)
             .add_plugin(PlayerPlugin)
+            .add_plugin(EventsPlugin)
             .add_plugin(InternalAudioPlugin)
             .on_state_enter(STAGE, AppState::RetryGame, switch_to_game.system());
     }
