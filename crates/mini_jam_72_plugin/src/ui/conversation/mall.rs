@@ -31,5 +31,4 @@ pub fn get_mall_conversations() -> Conversations {
         },
     );
 
-    Conversations { conversations }
-}
+    Conversations { conversations
