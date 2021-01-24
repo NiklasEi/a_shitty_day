@@ -11,9 +11,8 @@ pub struct InternalAudioPlugin;
 impl Plugin for InternalAudioPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app.add_plugin(AudioPlugin)
-            .on_state_enter(STAGE, AppState::InGame, start_background.system())
-            .on_state_update(STAGE, AppState::InGame, background.system())
-            .on_state_exit(STAGE, AppState::InGame, break_down_audio.system());
+            .add_startup_system(start_background.system())
+            .add_system(background.system());
     }
 }
 
@@ -40,8 +39,4 @@ fn background(
         let music: Handle<AudioSource> = asset_server.load(background_music());
         audio.play_in_channel(music, "background".to_owned());
     }
-}
-
-fn break_down_audio(audio: Res<Audio>) {
-    audio.drop_channel("background".to_owned());
 }

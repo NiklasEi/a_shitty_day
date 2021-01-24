@@ -50,7 +50,7 @@ fn move_player(
     mut player_query: Query<&mut Transform, With<Player>>,
     collider_query: Query<&Collide>,
 ) {
-    if actions.player_movement.is_none() {
+    if actions.player_movement.is_none() || !game_state.can_walk {
         return;
     }
     let speed = 150.;
@@ -95,10 +95,12 @@ fn move_player(
 
 fn handle_death(
     mut state: ResMut<State<AppState>>,
+    mut game_state: ResMut<GameState>,
     mut death_reader: Local<EventReader<DeathEvent>>,
     death_event: Res<Events<DeathEvent>>,
 ) {
     if death_reader.latest(&death_event).is_some() {
+        game_state.can_walk = true;
         state.set_next(AppState::RetryGame).unwrap();
     }
 }

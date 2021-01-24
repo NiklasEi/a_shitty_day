@@ -18,11 +18,11 @@ pub fn throw_piano(
                         .get_handle(&("textures/".to_owned() + "objects/piano.png")[..])
                         .into(),
                 ),
-                transform: Transform::from_translation(Vec3::new(
-                    player.translation.x + 100.,
-                    player.translation.y,
-                    3.,
-                )),
+                transform: Transform {
+                    translation: Vec3::new(player.translation.x, player.translation.y + 50., 1.),
+                    scale: Vec3::new(2., 2., 2.),
+                    ..Default::default()
+                },
                 ..Default::default()
             })
             .with(FallingPiano);
@@ -38,10 +38,11 @@ pub fn move_piano(
     for mut piano in piano_query.iter_mut() {
         for mut player_position in player_query.iter() {
             let mut direction = player_position.translation - piano.translation;
-            let movement = direction.normalize() * 100. * time.delta_seconds();
+            let movement = direction.normalize() * 50. * time.delta_seconds();
+            let scale = 2. + direction.length() / 50.;
             if movement.length() < direction.length() {
                 piano.translation += movement;
-                // piano.apply_non_uniform_scale(Vec3::new(piano.translation.z.clone(), piano.translation.z.clone(), piano.translation.z.clone()));
+                piano.scale = Vec3::new(scale, scale, scale);
             } else {
                 death_event.send(DeathEvent);
             }

@@ -2,7 +2,7 @@ mod piano;
 
 use crate::events::piano::{move_piano, throw_piano, FallingPiano};
 use crate::player::Player;
-use crate::{AppState, STAGE};
+use crate::{AppState, GameState, STAGE};
 use bevy::prelude::*;
 
 pub struct EventsPlugin;
@@ -42,6 +42,7 @@ fn trigger_events(
 
 fn handle_events(
     commands: &mut Commands,
+    mut game_state: ResMut<GameState>,
     mut event_state: ResMut<ShittyEventsState>,
     mut events: Local<EventReader<ShittyEvents>>,
     event: Res<Events<ShittyEvents>>,
@@ -55,7 +56,9 @@ fn handle_events(
                 if !event_state.triggered.contains(event)
                     && !event_state.perm_triggered.contains(event)
                 {
+                    game_state.can_walk = false;
                     event_state.triggered.push(event.clone());
+
                     throw_piano(commands, &asset_server, &mut materials, &player_query)
                 }
             }
