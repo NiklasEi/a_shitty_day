@@ -1,48 +1,59 @@
 use crate::map::{Coordinate, MapData, Npc};
 use std::collections::HashMap;
+use std::fs::File;
+use std::io::BufReader;
+use std::path::Path;
+use tiled::parse;
+use tiled::LayerData::Finite;
+use tiled::PropertyValue::BoolValue;
 
 pub fn get_mall_map() -> MapData {
+    let file = File::open(&Path::new("assets/map/mall.tmx")).unwrap();
+    let reader = BufReader::new(file);
+    let map = parse(reader).unwrap();
+
     let mut path_map = HashMap::default();
-    path_map.insert('#', "structure/woodenFloor.png".to_owned());
-    path_map.insert('w', "structure/wallblue.png".to_owned());
-    path_map.insert('e', "structure/escalator3.png".to_owned());
-    path_map.insert('p', "structure/stoneFloor.png".to_owned());
-    path_map.insert('1', "objects/bed_1.png".to_owned());
-    path_map.insert('2', "objects/bed_2.png".to_owned());
-    path_map.insert('3', "objects/bed_3.png".to_owned());
-    path_map.insert('4', "objects/bed_4.png".to_owned());
+    for set in map.tilesets.iter() {
+        for tile in set.tiles.iter() {
+            path_map.insert(
+                set.first_gid + tile.id,
+                tile.images.first().unwrap().source.clone(),
+            );
+        }
+    }
+
+    let mut layers = vec![];
+    for layer in map.layers.iter() {
+        let mut current_layer = vec![];
+        if let Finite(tiles) = &layer.tiles {
+            for row in tiles {
+                let mut current_row = vec![];
+                for tile in row {
+                    current_row.push(tile.gid);
+                }
+                current_layer.push(current_row);
+            }
+        }
+        layers.push(current_layer);
+    }
 
     return MapData {
-        layers: vec![
-            "\
-            #########p\n\
-            ####12###p\n\
-            ####43###p\n\
-            #########p\n\
-            ########ep\n\
-            #########p\n\
-            #########p\n\
-            #########p\n\
-            #########p\n\
-            #########p\n\
-            #########p"
-                .to_owned(),
-            "\
-            wwwwwwwww.\n\
-            w.......w.\n\
-            w.......w.\n\
-            w.......w.\n\
-            w.........\n\
-            w.......w.\n\
-            w.......w.\n\
-            w.......w.\n\
-            w.......w.\n\
-            w.......w.\n\
-            wwwwwwwww."
-                .to_owned(),
-        ],
+        layers,
         path_map,
-        colliding_layers: vec![1],
+        height: map.height,
+        width: map.width,
+        colliding_layers: map
+            .layers
+            .iter()
+            .enumerate()
+            .filter(|(_index, layer)| {
+                if let Some(BoolValue(collide)) = layer.properties.get("collide") {
+                    return collide.clone();
+                }
+                false
+            })
+            .map(|(index, _layer)| index)
+            .collect(),
         npcs: vec![
             Npc {
                 asset: Some("textures/objects/coin.png".to_owned()),

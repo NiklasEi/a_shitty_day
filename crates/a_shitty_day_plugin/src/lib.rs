@@ -12,7 +12,7 @@ use crate::actions::ActionsPlugin;
 use crate::audio::InternalAudioPlugin;
 use crate::events::EventsPlugin;
 use crate::loading::LoadingPlugin;
-use crate::map::{Coordinate, MapPlugin, Maps, PlayerCamera};
+use crate::map::{Coordinate, MapPlugin, Maps};
 use crate::menu::MenuPlugin;
 use crate::player::PlayerPlugin;
 use crate::ui::UiPlugin;

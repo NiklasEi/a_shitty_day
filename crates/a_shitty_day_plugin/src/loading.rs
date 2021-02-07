@@ -72,7 +72,9 @@ fn load(
     mut state: ResMut<State<AppState>>,
 ) {
     if sprite_handles.atlas_loaded {
-        state.set_next(AppState::Menu);
+        if let Err(error) = state.set_next(AppState::Menu) {
+            println!("Failed to move to Menu state: {:?}", error);
+        }
     }
     // Lets load all our textures from our folder!
     let mut texture_atlas_builder = TextureAtlasBuilder::default();

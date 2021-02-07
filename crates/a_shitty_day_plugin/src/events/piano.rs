@@ -1,5 +1,4 @@
 use crate::player::{DeathEvent, Player};
-use crate::AppState;
 use bevy::prelude::*;
 
 pub struct FallingPiano;
@@ -36,14 +35,18 @@ pub fn move_piano(
     mut death_event: ResMut<Events<DeathEvent>>,
 ) {
     for mut piano in piano_query.iter_mut() {
-        for mut player_position in player_query.iter() {
-            let mut direction = player_position.translation - piano.translation;
+        for player_position in player_query.iter() {
+            let direction = player_position.translation - piano.translation;
+            if direction == Vec3::zero() {
+                continue;
+            }
             let movement = direction.normalize() * 50. * time.delta_seconds();
             let scale = 2. + direction.length() / 50.;
+            piano.scale = Vec3::new(scale, scale, scale);
             if movement.length() < direction.length() {
                 piano.translation += movement;
-                piano.scale = Vec3::new(scale, scale, scale);
             } else {
+                piano.translation = player_position.translation;
                 death_event.send(DeathEvent);
             }
         }

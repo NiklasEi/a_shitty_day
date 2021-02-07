@@ -75,10 +75,12 @@ pub struct Collide {
 }
 
 pub struct MapData {
-    layers: Vec<String>,
+    layers: Vec<Vec<Vec<u32>>>,
     npcs: Vec<Npc>,
-    path_map: HashMap<char, String>,
+    path_map: HashMap<u32, String>,
     colliding_layers: Vec<usize>,
+    height: u32,
+    width: u32,
 }
 
 #[derive(Debug)]
@@ -93,22 +95,21 @@ pub type NpcPosition = Coordinate;
 impl Map {
     pub fn load_map(map_data: MapData) -> Self {
         let mut map = Map {
-            height: 0,
-            width: 0,
+            height: map_data.height as usize,
+            width: map_data.width as usize,
             npcs: map_data.npcs,
             layers: vec![],
             colliding_layers: vec![],
             tile_size: 32.,
         };
 
-        for (floor_index, map_str) in map_data.layers.iter().enumerate() {
+        for (floor_index, layer_data) in map_data.layers.iter().enumerate() {
             let mut floor = vec![];
-            map.height = map_str.lines().count();
-            for (row_index, line) in map_str.lines().enumerate() {
+            for (row_index, row_data) in layer_data.iter().enumerate() {
                 let _row_index = map.height - row_index - 1;
-                let mut row = vec![];
-                for (_column_index, char) in line.chars().enumerate() {
-                    if let Some(path) = map_data.path_map.get(&char) {
+                let mut row: Vec<Tile> = vec![];
+                for (_column_index, gid) in row_data.iter().enumerate() {
+                    if let Some(path) = map_data.path_map.get(gid) {
                         row.push(Tile {
                             asset_path: Some(path.clone()),
                         })
@@ -118,13 +119,12 @@ impl Map {
                 }
                 floor.push(row);
             }
-            // otherwise my map is head down O.o
+            // otherwise my map is upside down O.o
             floor.reverse();
             map.colliding_layers
                 .push(map_data.colliding_layers.contains(&floor_index));
             map.layers.push(floor);
         }
-        map.width = map.layers.first().unwrap().first().unwrap().len();
 
         map
     }
@@ -179,11 +179,7 @@ fn render_map(
                 let tile = &layer[row][column];
                 if let Some(path) = &tile.asset_path {
                     let sprite = SpriteBundle {
-                        material: materials.add(
-                            asset_server
-                                .get_handle(&("textures/".to_owned() + path)[..])
-                                .into(),
-                        ),
+                        material: materials.add(asset_server.get_handle(&(path)[3..]).into()),
                         transform: Transform::from_translation(Vec3::new(
                             column as f32 * map.tile_size,
                             row as f32 * map.tile_size,

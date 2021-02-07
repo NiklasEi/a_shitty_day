@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="10" height="11" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="1">
+ <tileset firstgid="1" name="textures" tilewidth="32" tileheight="32" tilecount="18" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image width="32" height="32" source="../textures/structure/escalator1.png"/>
+  </tile>
+  <tile id="1">
+   <image width="32" height="32" source="../textures/structure/escalator2.png"/>
+  </tile>
+  <tile id="2">
+   <image width="32" height="32" source="../textures/structure/escalator3.png"/>
+  </tile>
+  <tile id="3">
+   <image width="32" height="32" source="../textures/structure/escalatorsmall.png"/>
+  </tile>
+  <tile id="4">
+   <image width="32" height="8" source="../textures/structure/exit.png"/>
+  </tile>
+  <tile id="5">
+   <image width="32" height="32" source="../textures/structure/glaswall.png"/>
+  </tile>
+  <tile id="6">
+   <image width="32" height="32" source="../textures/structure/lowerfloor.png"/>
+  </tile>
+  <tile id="7">
+   <image width="32" height="32" source="../textures/structure/shopdoor.png"/>
+  </tile>
+  <tile id="8">
+   <image width="32" height="32" source="../textures/structure/sidewalk.png"/>
+  </tile>
+  <tile id="9">
+   <image width="32" height="32" source="../textures/structure/stoneFloor.png"/>
+  </tile>
+  <tile id="10">
+   <image width="32" height="32" source="../textures/structure/street.png"/>
+  </tile>
+  <tile id="11">
+   <image width="32" height="32" source="../textures/structure/swingdoor1.png"/>
+  </tile>
+  <tile id="12">
+   <image width="32" height="32" source="../textures/structure/swingdoor2.png"/>
+  </tile>
+  <tile id="13">
+   <image width="32" height="32" source="../textures/structure/swingdoor3.png"/>
+  </tile>
+  <tile id="14">
+   <image width="32" height="32" source="../textures/structure/swingdoor4.png"/>
+  </tile>
+  <tile id="15">
+   <image width="32" height="32" source="../textures/structure/wall.png"/>
+  </tile>
+  <tile id="16">
+   <image width="32" height="32" source="../textures/structure/wallblue.png"/>
+  </tile>
+  <tile id="17">
+   <image width="32" height="32" source="../textures/structure/woodenFloor.png"/>
+  </tile>
+ </tileset>
+ <tileset firstgid="19" name="objects" tilewidth="44" tileheight="32" tilecount="34" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image width="32" height="32" source="../textures/objects/bed_1.png"/>
+  </tile>
+  <tile id="1">
+   <image width="32" height="32" source="../textures/objects/bed_2.png"/>
+  </tile>
+  <tile id="2">
+   <image width="32" height="32" source="../textures/objects/bed_3.png"/>
+  </tile>
+  <tile id="3">
+   <image width="32" height="32" source="../textures/objects/bed_4.png"/>
+  </tile>
+  <tile id="4">
+   <image width="32" height="32" source="../textures/objects/bigbluebed1.png"/>
+  </tile>
+  <tile id="5">
+   <image width="32" height="32" source="../textures/objects/bigbluebed2.png"/>
+  </tile>
+  <tile id="6">
+   <image width="32" height="32" source="../textures/objects/bigbluebed3.png"/>
+  </tile>
+  <tile id="7">
+   <image width="32" height="32" source="../textures/objects/bigbluebed4.png"/>
+  </tile>
+  <tile id="8">
+   <image width="27" height="25" source="../textures/objects/blood.png"/>
+  </tile>
+  <tile id="9">
+   <image width="32" height="32" source="../textures/objects/bluebed1.png"/>
+  </tile>
+  <tile id="10">
+   <image width="32" height="32" source="../textures/objects/bluebed2.png"/>
+  </tile>
+  <tile id="11">
+   <image width="5" height="3" source="../textures/objects/chocolate.png"/>
+  </tile>
+  <tile id="12">
+   <image width="2" height="2" source="../textures/objects/coin.png"/>
+  </tile>
+  <tile id="13">
+   <image width="15" height="15" source="../textures/objects/flower1.png"/>
+  </tile>
+  <tile id="14">
+   <image width="17" height="16" source="../textures/objects/flower2.png"/>
+  </tile>
+  <tile id="15">
+   <image width="16" height="17" source="../textures/objects/flower3.png"/>
+  </tile>
+  <tile id="16">
+   <image width="15" height="15" source="../textures/objects/flowerpot.png"/>
+  </tile>
+  <tile id="17">
+   <image width="5" height="3" source="../textures/objects/money.png"/>
+  </tile>
+  <tile id="18">
+   <image width="23" height="9" source="../textures/objects/piano.png"/>
+  </tile>
+  <tile id="19">
+   <image width="32" height="32" source="../textures/objects/pinkbed1.png"/>
+  </tile>
+  <tile id="20">
+   <image width="32" height="32" source="../textures/objects/pinkbed2.png"/>
+  </tile>
+  <tile id="21">
+   <image width="9" height="3" source="../textures/objects/securitycamera.png"/>
+  </tile>
+  <tile id="22">
+   <image width="28" height="8" source="../textures/objects/shelv1.png"/>
+  </tile>
+  <tile id="23">
+   <image width="28" height="8" source="../textures/objects/shelv2.png"/>
+  </tile>
+  <tile id="24">
+   <image width="32" height="32" source="../textures/objects/sofa1.png"/>
+  </tile>
+  <tile id="25">
+   <image width="32" height="32" source="../textures/objects/sofa2.png"/>
+  </tile>
+  <tile id="26">
+   <image width="44" height="22" source="../textures/objects/speakbubble1.png"/>
+  </tile>
+  <tile id="27">
+   <image width="40" height="17" source="../textures/objects/speakbubble2.png"/>
+  </tile>
+  <tile id="28">
+   <image width="8" height="9" source="../textures/objects/tablet.png"/>
+  </tile>
+  <tile id="29">
+   <image width="8" height="9" source="../textures/objects/tablet2.png"/>
+  </tile>
+  <tile id="30">
+   <image width="28" height="9" source="../textures/objects/tablev1.png"/>
+  </tile>
+  <tile id="31">
+   <image width="30" height="10" source="../textures/objects/tablev2.png"/>
+  </tile>
+  <tile id="32">
+   <image width="28" height="9" source="../textures/objects/tablev3.png"/>
+  </tile>
+  <tile id="33">
+   <image width="30" height="10" source="../textures/objects/tablev5.png"/>
+  </tile>
+ </tileset>
+ <layer id="1" name="floor" width="10" height="11">
+  <properties>
+   <property name="collide" type="bool" value="false"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJwTYmBgECKAuYhQM1DqmAe5+2ilDgBicgdW
+  </data>
+ </layer>
+ <layer id="3" name="objects" width="10" height="11">
+  <properties>
+   <property name="collide" type="bool" value="false"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJxjYCAPCAOxCBHqxIBYlEw7RgFuAAB1XABT
+  </data>
+ </layer>
+ <layer id="4" name="wall" width="10" height="11">
+  <properties>
+   <property name="collide" type="bool" value="true"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJwTYGBgECCAGZBoXGCg1KGrp5e9tFRHTHwAAOpHAjE=
+  </data>
+ </layer>
+</map>

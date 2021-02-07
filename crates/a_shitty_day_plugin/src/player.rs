@@ -3,7 +3,6 @@ use crate::map::{Collide, Map, PlayerCamera};
 use crate::ui::HideConversation;
 use crate::{AppState, GameState, STAGE};
 use bevy::prelude::*;
-use std::f32::consts::PI;
 
 pub struct PlayerPlugin;
 
