@@ -3,5 +3,5 @@ pub fn font_monogram() -> &'static str {
 }
 
 pub fn background_music() -> &'static str {
-    "sounds/background.mp3"
+    "sounds/background.ogg"
 }

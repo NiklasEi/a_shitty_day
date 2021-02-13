@@ -11,12 +11,14 @@ default = [
     "bevy/bevy_winit",
     "bevy/render",
     "bevy/png",
-    "bevy_improved_audio/mp3",
+    "bevy_kira_audio/ogg"
+]
+
+native = [
     "bevy/bevy_wgpu"
 ]
 
 [dependencies]
 bevy = { version="0.4.0", default-features=false }
-# bevy_improved_audio = { path="../../../bevy_improved_audio" }
-bevy_improved_audio = { git="https://github.com/NiklasEi/bevy_improved_audio.git" }
+bevy_kira_audio = {version="0.1.0"}
 tiled = "0.9.3"
