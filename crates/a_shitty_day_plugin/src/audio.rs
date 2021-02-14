@@ -12,27 +12,15 @@ impl Plugin for InternalAudioPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app.add_plugin(AudioPlugin)
             .on_state_enter(STAGE, AppState::InGame, start_background.system())
-            .on_state_update(STAGE, AppState::InGame, background.system());
+            .on_state_exit(STAGE, AppState::InGame, stop_sound.system());
     }
 }
 
-type BackgroundTimer = Timer;
-
-fn start_background(commands: &mut Commands, asset_server: Res<AssetServer>, audio: Res<Audio>) {
-    commands.insert_resource(BackgroundTimer::from_seconds(31.008, true));
+fn start_background(asset_server: Res<AssetServer>, audio: Res<Audio>) {
     let music: Handle<AudioSource> = asset_server.load(background_music());
-    audio.play(music);
+    audio.play_looped(music);
 }
 
-fn background(
-    mut timer: ResMut<BackgroundTimer>,
-    asset_server: Res<AssetServer>,
-    time: Res<Time>,
-    audio: Res<Audio>,
-) {
-    timer.tick(time.delta_seconds());
-    if timer.just_finished() {
-        let music: Handle<AudioSource> = asset_server.load(background_music());
-        audio.play(music);
-    }
+fn stop_sound(audio: Res<Audio>) {
+    audio.stop();
 }

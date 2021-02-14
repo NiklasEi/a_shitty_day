@@ -20,5 +20,5 @@ native = [
 
 [dependencies]
 bevy = { version="0.4.0", default-features=false }
-bevy_kira_audio = {version="0.1.0"}
+bevy_kira_audio = {path="../../../bevy_kira_audio"}
 tiled = "0.9.3"
