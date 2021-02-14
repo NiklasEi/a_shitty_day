@@ -1,9 +1,6 @@
 use crate::assets::background_music;
 use crate::{AppState, STAGE};
-use bevy::ecs::Commands;
-use bevy::prelude::{
-    AppBuilder, AssetServer, Handle, IntoSystem, Plugin, Res, ResMut, Time, Timer,
-};
+use bevy::prelude::{AppBuilder, AssetServer, Handle, IntoSystem, Plugin, Res};
 use bevy_kira_audio::{Audio, AudioPlugin, AudioSource};
 
 pub struct InternalAudioPlugin;

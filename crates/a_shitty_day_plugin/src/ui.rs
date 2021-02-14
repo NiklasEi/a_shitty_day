@@ -1,10 +1,11 @@
 mod conversation;
 
 use crate::ui::conversation::ConversationPlugin;
-use crate::{AppState, GameState, STAGE};
+use crate::{AppState, STAGE};
 use bevy::prelude::*;
 
 use crate::assets::font_monogram;
+use bevy_kira_audio::Audio;
 pub use conversation::{CanTalk, ConversationId, HideConversation};
 
 pub struct UiPlugin;
@@ -12,12 +13,16 @@ pub struct UiPlugin;
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app.init_resource::<ButtonMaterials>()
+            .add_resource(AudioState { paused: false })
             .on_state_enter(STAGE, AppState::InGame, init_ui.system())
             .add_plugin(ConversationPlugin)
-            .on_state_update(STAGE, AppState::InGame, retry_system.system())
-            .on_state_update(STAGE, AppState::InGame, click_retry_button.system())
+            .on_state_update(STAGE, AppState::InGame, audio_state_button.system())
             .on_state_exit(STAGE, AppState::InGame, clean_up_ui.system());
     }
+}
+
+struct AudioState {
+    paused: bool,
 }
 
 struct ButtonMaterials {
@@ -38,7 +43,7 @@ impl FromResources for ButtonMaterials {
     }
 }
 
-struct RetryButton;
+struct AudioStateButton;
 
 struct ConversationText;
 
@@ -51,7 +56,7 @@ fn init_ui(
     button_materials: Res<ButtonMaterials>,
 ) {
     let font = asset_server.load(font_monogram());
-    let material = color_materials.add(Color::GRAY.into());
+    let gray = color_materials.add(Color::GRAY.into());
     commands
         .spawn(CameraUiBundle::default())
         // root node
@@ -72,7 +77,7 @@ fn init_ui(
                 is_visible: false,
                 is_transparent: false,
             },
-            material,
+            material: gray.clone(),
             ..Default::default()
         })
         .with(ConversationUi)
@@ -131,60 +136,56 @@ fn init_ui(
                         .with(ContinueConversationText)
                         .with(ConversationUi);
                 });
+        })
+        .spawn(NodeBundle {
+            style: Style {
+                position_type: PositionType::Absolute,
+                position: Rect {
+                    bottom: Val::Auto,
+                    left: Val::Auto,
+                    right: Val::Percent(50.),
+                    top: Val::Px(0.),
+                },
+                ..Default::default()
+            },
+            material: gray,
+            ..Default::default()
+        })
+        .with_children(|parent| {
+            parent
+                .spawn(ButtonBundle {
+                    style: Style {
+                        size: Size::new(Val::Px(150.0), Val::Px(65.0)),
+                        margin: Rect::all(Val::Auto),
+                        justify_content: JustifyContent::Center,
+                        align_items: AlignItems::Center,
+                        ..Default::default()
+                    },
+                    material: button_materials.normal.clone(),
+                    ..Default::default()
+                })
+                .with(AudioStateButton);
         });
 }
 
-fn retry_system(
-    commands: &mut Commands,
-    asset_server: ResMut<AssetServer>,
-    game_state: ChangedRes<GameState>,
+fn audio_state_button(
     button_materials: Res<ButtonMaterials>,
-) {
-    if game_state.health < 1 {
-        commands
-            .spawn(ButtonBundle {
-                style: Style {
-                    size: Size::new(Val::Px(150.0), Val::Px(65.0)),
-                    margin: Rect::all(Val::Auto),
-                    justify_content: JustifyContent::Center,
-                    align_items: AlignItems::Center,
-                    ..Default::default()
-                },
-                material: button_materials.normal.clone(),
-                ..Default::default()
-            })
-            .with(RetryButton)
-            .with_children(|parent| {
-                parent.spawn(TextBundle {
-                    text: Text {
-                        value: "Restart".to_string(),
-                        font: asset_server.load(font_monogram()),
-                        style: TextStyle {
-                            font_size: 40.0,
-                            color: Color::rgb(0.9, 0.9, 0.9),
-                            ..Default::default()
-                        },
-                    },
-                    ..Default::default()
-                });
-            });
-    }
-}
-
-fn click_retry_button(
-    button_materials: Res<ButtonMaterials>,
-    mut state: ResMut<State<AppState>>,
-    mut game_state: ResMut<GameState>,
+    audio: Res<Audio>,
+    mut audio_state: ResMut<AudioState>,
     mut interaction_query: Query<
         (&Interaction, &mut Handle<ColorMaterial>),
-        (Mutated<Interaction>, With<RetryButton>),
+        (Mutated<Interaction>, With<AudioStateButton>),
     >,
 ) {
     for (interaction, mut material) in interaction_query.iter_mut() {
         match *interaction {
             Interaction::Clicked => {
-                *game_state = GameState::default();
-                state.set_next(AppState::RetryGame).unwrap();
+                if audio_state.paused {
+                    audio.resume();
+                } else {
+                    audio.pause();
+                }
+                audio_state.paused = !audio_state.paused;
             }
             Interaction::Hovered => {
                 *material = button_materials.hovered.clone();
@@ -199,12 +200,12 @@ fn click_retry_button(
 fn clean_up_ui(
     commands: &mut Commands,
     conversation_query: Query<Entity, With<ConversationUi>>,
-    retry_query: Query<Entity, With<RetryButton>>,
+    audio_state_query: Query<Entity, With<AudioStateButton>>,
 ) {
     for ui in conversation_query.iter() {
         commands.despawn(ui);
     }
-    for retry in retry_query.iter() {
+    for retry in audio_state_query.iter() {
         commands.despawn_recursive(retry);
     }
 }
